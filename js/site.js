@@ -15,7 +15,7 @@ $(function() {
       // Initial click of the buttons
       $('.js_service button').trigger('click');
 
-      $('.js_listJobs').animate( {'left':'0%'}, 500, function() {
+      $('.js_listJobs').fadeIn('500').animate( {'left':'0%'}, 500, function() {
         $('.js_introPage').fadeOut('500');
       });
     }
@@ -63,12 +63,16 @@ $(function() {
           var loc = results[i].location;
           loc = loc ? loc.replace(/^\s\s*/, '').replace(/\s\s*$/, '') : "";
 
-          var text = title + ( company ? ", "+company : "" ) + ( loc ? ", " + loc : "" );
+          var text = '<b>'+title+'</b>' + ( company ? ", "+company : "" ) + ( loc ? ", " + loc : "" );
 
           var html = '<li><a href="'+results[i].url+'">'+text+'</a></li>';
 
           listElement.append(html);
         }
+      } else {
+        var noJobs = '<li><div class="alert alert-error alert-block">'+(page > 1 ? 'No more jobs found :(' : 'No jobs found :(')+'</div></li>';
+
+        listElement.append(noJobs);
       }
     });
 
