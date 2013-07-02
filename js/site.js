@@ -12,12 +12,8 @@ $(function() {
   $('.js_introPage form button').on('click', function() {
 
     if( $('.js_word').val() && $('.js_zip').val() ) {
-      // Initial click of the buttons
-      $('.js_service button').trigger('click');
-
-      $('.js_listJobs').fadeIn('500').animate( {'left':'0%'}, 500, function() {
-        $('.js_introPage').fadeOut('500');
-      });
+      // Reset service & Initial click of the buttons
+      $('.js_service').attr('data-page', 0).find('ul').html('').siblings('button').trigger('click');
     }
 
     return false;
@@ -70,7 +66,7 @@ $(function() {
           listElement.append(html);
         }
       } else {
-        var noJobs = '<li><div class="alert alert-error alert-block">'+(page > 1 ? 'No more jobs found :(' : 'No jobs found :(')+'</div></li>';
+        var noJobs = '<li><div class="alert alert-error alert-block">'+(page > 1 ? 'Ikke flere jobs :(' : 'Ingen job fundet :(')+'</div></li>';
 
         listElement.append(noJobs);
       }

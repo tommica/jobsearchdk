@@ -24,29 +24,9 @@ h1 {
 .container {
   padding-top: 20px;
   position: relative;
-
-  .inputBig {
-    font-size: 35pt;
-    line-height: 45pt;
-    height: auto;
-    vertical-align: top;
-  }
-
-  .inputWide {
-    width: 98%;
-    padding-left: 1%;
-    padding-right: 1%;
-  }
 }
 
 .jobLists {
-  display: none;
-  margin-bottom: 30px;
-  position: absolute;
-  top: 20px;
-  left: 200%;
-  width: 100%;
-
   .jobListWrap {
     margin-bottom: 20px;
     width: 49%;

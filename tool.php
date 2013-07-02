@@ -24,7 +24,7 @@ if( $_GET['word'] && $_GET['page'] && $_GET['service'] && $_GET['zip'] ) {
   if( in_array($_GET['service'], $services) ) {
     // When we use $variable(), it uses it as an function - $var = 'thisisastring' -> $var() -> thisisastring()
     $service = $_GET['service'].'Scraper';
-    $data['result'] = $service($page, $word, $zip);
+    $data['result'] = $service($page, $word, $zip, $_GET['service']);
   } else {
     $data['error'] = true;
     $data['errorText'] = 'Service is not supported';
@@ -39,7 +39,7 @@ echo json_encode($data, JSON_HEX_AMP);
 
 
 /* FUNCTIONS */
-function jobindexScraper($page, $word, $zip) {
+function jobindexScraper($page, $word, $zip, $service) {
   // Set the URL
   $url = 'http://www.jobindex.dk/';
   $fetchUrl = $url.'/cgi/jobsearch.cgi?page='.$page.'&q='.$word.'&zipcodes='.$zip;
@@ -55,6 +55,7 @@ function jobindexScraper($page, $word, $zip) {
       $temp = array();
       $title = $element->find('a', 1);
 
+      $temp['service'] = $service;
       $temp['url'] = $url.$title->href;
       $temp['title'] = utf8_encode($title->plaintext);
 
@@ -82,7 +83,7 @@ function jobindexScraper($page, $word, $zip) {
   return $data;
 }
 
-function jobnetScraper($page, $word, $zip) {
+function jobnetScraper($page, $word, $zip, $service) {
   // Jobnet counts pages as start numbers, and force it in 20 apps per page
   // Apparently I can use whatever amount I want when using this url, but I think I'll keep it in 20 still
   $page = ( ($page-1) * 20 ) + 1;
@@ -103,6 +104,7 @@ function jobnetScraper($page, $word, $zip) {
     foreach( $html->JobPostingDigests as $element ) {
       $temp = array();
 
+      $temp['service'] = $service;
       $temp['title'] = $element->Headline;
       $temp['company'] = $element->HiringOrgName;
       $temp['location'] = $element->WorkLocation;
@@ -117,7 +119,7 @@ function jobnetScraper($page, $word, $zip) {
   return $data;
 }
 
-function jobuniversScraper($page, $word, $zip) {
+function jobuniversScraper($page, $word, $zip, $service) {
   // Jobunvers uses base64 for encoding the url, with some weird syntax - example:
   // ?query=djAuMXxQTjoxfFBTOjIwfENSOkZyZWV0ZXh0OnRla25pc2t8djAuMQ==&params=cXVlcnlmaWx0ZXI6
   // Map regions:
@@ -168,6 +170,7 @@ function jobuniversScraper($page, $word, $zip) {
       // Apparently here I don't need urf8_encode for some reason - I guess they provide the content with it already
       $temp = array();
       $title = $element->find('.headingContainer h2 a', 0);
+      $temp['service'] = $service;
 
       $temp['url'] = $url.$title->href;
       $temp['title'] = ($title->plaintext);
@@ -182,7 +185,7 @@ function jobuniversScraper($page, $word, $zip) {
   return $data;
 }
 
-function jobzonenScraper($page, $word, $zip) {
+function jobzonenScraper($page, $word, $zip, $service) {
   // Jobunvers uses base64 for encoding the url, with some weird syntax - example:
   // ?query=djAuMXxQTjoxfFBTOjIwfENSOkZyZWV0ZXh0OnRla25pc2t8djAuMQ==&params=cXVlcnlmaWx0ZXI6
   // Map regions:
@@ -233,6 +236,7 @@ function jobzonenScraper($page, $word, $zip) {
       // Apparently here I don't need urf8_encode for some reason - I guess they provide the content with it already
       $temp = array();
       $title = $element->find('.column2 h2 a', 0);
+      $temp['service'] = $service;
 
       $temp['url'] = $url.$title->href;
       $temp['title'] = ($title->plaintext);
@@ -247,7 +251,7 @@ function jobzonenScraper($page, $word, $zip) {
   return $data;
 }
 
-function ofirScraper($page, $word, $zip) {
+function ofirScraper($page, $word, $zip, $service) {
   // Ofir has basically the same way of handling thing as  jobunivers
   // Map regions:
   $region = '^Storkøbenhavn$_';
@@ -297,6 +301,7 @@ function ofirScraper($page, $word, $zip) {
       // Apparently here I don't need urf8_encode for some reason - I guess they provide the content with it already
       $temp = array();
       $title = $element->find('.Heading a', 0);
+      $temp['service'] = $service;
 
       $temp['url'] = $url.$title->href;
       $temp['title'] = ($title->plaintext);
@@ -311,7 +316,7 @@ function ofirScraper($page, $word, $zip) {
   return $data;
 }
 
-function monsterScraper($page, $word, $zip) {
+function monsterScraper($page, $word, $zip, $service) {
   // Monster requires that the city is written, not postcode
   $city = 'http://geo.oiorest.dk/postnumre/'.$zip.'.json';
   $city_json = file_get_contents( $city );
@@ -344,6 +349,7 @@ function monsterScraper($page, $word, $zip) {
     foreach( $html as $element ) {
       $temp = array();
 
+      $temp['service'] = $service;
       $temp['title'] = $element->Title;
       $temp['company'] = $element->CompanyNameText;
       $temp['location'] = $element->City;
