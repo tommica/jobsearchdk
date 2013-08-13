@@ -72,8 +72,10 @@ function jobindexScraper($page, $word, $zip, $service) {
       $temp['url'] = $url.$title->href;
       $temp['title'] = utf8_encode($title->plaintext);
 
-      $temp['location'] = utf8_encode($element->find('b', 1)->plaintext);
-      $temp['company'] = utf8_encode($element->find('b', 0)->plaintext);
+      $location = $element->find('b', 1);
+      $company = $element->find('b', 0);
+      $temp['location'] = ($location ? utf8_encode($location->plaintext) : '');
+      $temp['company'] = ($company ? utf8_encode($company->plaintext) : '');
 
       $data[] = $temp;
     }
@@ -306,8 +308,10 @@ function ofirScraper($page, $word, $zip, $service) {
       $temp['url'] = $url.$title->href;
       $temp['title'] = ($title->plaintext);
 
-      $temp['company'] = ($element->find('.CompanyName', 0)->plaintext);
-      $temp['location'] = ($element->find('Location', 0)->plaintext);
+      $location = $element->find('.Location', 1);
+      $company = $element->find('.CompanyName', 0);
+      $temp['location'] = ($location ? utf8_encode($location->plaintext) : '');
+      $temp['company'] = ($company ? utf8_encode($company->plaintext) : '');
 
       $data[] = $temp;
     }
@@ -355,7 +359,7 @@ function monsterScraper($page, $word, $zip, $service) {
       $temp['location'] = $element->City;
 
       // Jobnet has both internal and external applications - internals need url+id, external just url
-      $temp['url'] = ($element->JobViewUrl) ? $element->DetailsUrl : 'https://monster.dk/'.$element->JobId;
+      $temp['url'] = ($element->JobViewUrl && isset($element->DetailsUrl) ? $element->DetailsUrl : 'https://monster.dk/'.$element->JobViewUrl);
 
       $data[] = $temp;
     }
